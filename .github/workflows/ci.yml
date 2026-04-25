@@ -1,0 +1,69 @@
+name: Backend CI
+
+on:
+  push:
+    branches: [ "main", "feature/*", "develop" ]
+  pull_request:
+    branches: [ "main", "develop" ]
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+
+    services:
+      db:
+        image: postgres:15
+        env:
+          POSTGRES_DB: rota_expressa_db
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        cd backend
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run Linter (flake8)
+      run: |
+        cd backend
+        flake8 .
+
+    - name: Run Tests (pytest)
+      env:
+        SECRET_KEY: "django-insecure-test-key"
+        DJANGO_DEBUG: "True"
+        POSTGRES_DB: rota_expressa_db
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: postgres_password
+        DB_HOST: localhost
+        DB_PORT: 5432
+        REDIS_URL: "redis://localhost:6379/1"
+      run: |
+        cd backend
+        pytest
