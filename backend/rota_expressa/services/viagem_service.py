@@ -24,11 +24,9 @@ class ViagemService:
             queryset = queryset.filter(destino_id=destino)
 
         if horario:
-            # __gte = Maior ou igual (horários a partir do que o usuário digitou)
             queryset = queryset.filter(horario_partida__gte=horario)
 
         if preco:
-            # __lte = Menor ou igual (preços até o limite que o usuário digitou)
             queryset = queryset.filter(valor__lte=preco)
 
         return queryset
@@ -49,11 +47,9 @@ class ViagemService:
         if not origem_nome or not destino_nome:
             raise ValidationError({"detail": "Origem e destino são obrigatórios."})
 
-        # Cria ou busca as cidades no banco local
         cidade_origem, _ = Cidade.objects.get_or_create(nome=origem_nome, estado=origem_estado)
         cidade_destino, _ = Cidade.objects.get_or_create(nome=destino_nome, estado=destino_estado)
 
-        # Injeta os IDs na cópia dos dados para que o Serializer fique feliz
         dados['origem'] = cidade_origem.id
         dados['destino'] = cidade_destino.id
 
