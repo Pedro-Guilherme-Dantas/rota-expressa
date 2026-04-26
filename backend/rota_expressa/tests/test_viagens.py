@@ -1,6 +1,6 @@
 import pytest
 from rest_framework.test import APIClient
-from rota_expressa.models import Avaliacao, Motorista
+from rota_expressa.models import Avaliacao
 from rota_expressa.services.viagem_service import ViagemService
 from rota_expressa.tests.factories import (
     UsuarioFactory, MotoristaFactory, CidadeFactory,
@@ -151,8 +151,18 @@ class TestFiltroViagens:
         motorista = MotoristaFactory()
         veiculo = VeiculoFactory(motorista=motorista)
 
-        ViagemFactory(origem=cidade_a, destino=cidade_b, veiculo=veiculo, motorista=motorista)
-        ViagemFactory(origem=cidade_b, destino=cidade_a, veiculo=veiculo, motorista=motorista)
+        ViagemFactory(
+            origem=cidade_a,
+            destino=cidade_b,
+            veiculo=veiculo,
+            motorista=motorista
+        )
+        ViagemFactory(
+            origem=cidade_b,
+            destino=cidade_a,
+            veiculo=veiculo,
+            motorista=motorista
+        )
 
         client = APIClient()
         client.force_authenticate(user=motorista.usuario)
@@ -204,13 +214,16 @@ class TestSignalAvaliacao:
         avaliador_1 = UsuarioFactory()
         avaliador_2 = UsuarioFactory()
 
-        # Cria duas avaliações (notas 4 e 2) -> média esperada: 3.0
-        av1 = Avaliacao.objects.create(motorista=motorista, usuario=avaliador_1, nota=4)
-        Avaliacao.objects.create(motorista=motorista, usuario=avaliador_2, nota=2)
+        av1 = Avaliacao.objects.create(
+            motorista=motorista, usuario=avaliador_1, nota=4)
+        Avaliacao.objects.create(
+            motorista=motorista,
+            usuario=avaliador_2,
+            nota=2
+        )
         motorista.refresh_from_db()
         assert motorista.nota_media == 3.0
 
-        # Deleta a avaliação de nota 4 -> média esperada: 2.0
         av1.delete()
         motorista.refresh_from_db()
         assert motorista.nota_media == 2.0

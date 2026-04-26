@@ -19,13 +19,13 @@ class Viagem(models.Model):
         Cidade,
         on_delete=models.CASCADE,
         related_name='viagem_origem'
-        )
+    )
 
     destino = models.ForeignKey(
         Cidade,
         on_delete=models.CASCADE,
         related_name='viagem_destino'
-        )
+    )
 
     horario_partida = models.TimeField()
     horario_chegada = models.TimeField()
@@ -45,6 +45,6 @@ class Viagem(models.Model):
             f'{self.horario_partida:%H:%M} até '
             f'{self.horario_chegada:%H:%M} no dia '
             f'{self.DIAS_SEMANA[self.dia_semana][1]} com valor de R$ {self.valor}'
-            )
+        )
 
         return msg

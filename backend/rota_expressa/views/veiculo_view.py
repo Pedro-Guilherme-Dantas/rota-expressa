@@ -1,6 +1,5 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
-from rest_framework import status
 from drf_spectacular.utils import extend_schema
 from rota_expressa.services.veiculo_service import VeiculoService
 from rota_expressa.serializers.veiculo_serializer import (
@@ -17,7 +16,7 @@ class VeiculoViewSet(viewsets.ViewSet):
         veiculos = VeiculoService.get_all_veiculos()
         serializer = VeiculoResponseSerializer(
             veiculos, many=True
-            )
+        )
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @extend_schema(
@@ -28,16 +27,18 @@ class VeiculoViewSet(viewsets.ViewSet):
     def create(self, request):
         serializer = VeiculoSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        veiculo = VeiculoService.criar_veiculo(serializer.validated_data, request.user)
+        veiculo = VeiculoService.criar_veiculo(
+            serializer.validated_data, request.user
+        )
         response_serializer = VeiculoResponseSerializer(veiculo)
         return Response(
             response_serializer.data, status=status.HTTP_201_CREATED
-            )
+        )
 
     @extend_schema(
         summary="Recupera um veículo por ID",
         responses={200: VeiculoResponseSerializer, 404: "Not Found"}
-        )
+    )
     def retrieve(self, request, pk=None):
         veiculo = VeiculoService.get_veiculo_by_id(pk)
         serializer = VeiculoResponseSerializer(veiculo)
@@ -53,7 +54,7 @@ class VeiculoViewSet(viewsets.ViewSet):
         serializer.is_valid(raise_exception=True)
         veiculo = VeiculoService.atualizar_veiculo(
             pk, serializer.validated_data
-            )
+        )
         response_serializer = VeiculoResponseSerializer(veiculo)
         return Response(response_serializer.data, status=status.HTTP_200_OK)
 
@@ -67,7 +68,7 @@ class VeiculoViewSet(viewsets.ViewSet):
         serializer.is_valid(raise_exception=True)
         veiculo = VeiculoService.atualizar_veiculo(
             pk, serializer.validated_data
-            )
+        )
         response_serializer = VeiculoResponseSerializer(veiculo)
         return Response(response_serializer.data, status=status.HTTP_200_OK)
 

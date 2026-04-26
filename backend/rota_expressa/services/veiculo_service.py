@@ -30,7 +30,7 @@ class VeiculoService:
     def criar_veiculo(dados_validados: dict, usuario) -> Veiculo:
         if not hasattr(usuario, 'perfil_motorista'):
             raise PermissionDenied("Apenas motoristas podem cadastrar veículos.")
-            
+
         dados_validados['motorista'] = usuario.perfil_motorista
         return Veiculo.objects.create(**dados_validados)
 
@@ -41,7 +41,7 @@ class VeiculoService:
         if dados_validados.get('placa'):
             dados_validados['placa'] = VeiculoService.validar_e_limpar_placa(
                 dados_validados['placa']
-                )
+            )
 
         if not veiculo:
             raise NotFound("Erro: Veículo não encontrado")

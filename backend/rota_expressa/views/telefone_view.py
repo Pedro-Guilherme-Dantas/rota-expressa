@@ -1,7 +1,6 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema
-from rest_framework import status
 from rota_expressa.services.telefone_service import TelefoneService
 from rota_expressa.serializers.telefone_serializer import (
     TelefoneSerializer, TelefoneResponseSerializer
@@ -17,7 +16,7 @@ class TelefoneViewSet(viewsets.ViewSet):
         telefones = TelefoneService.get_all_telefones()
         serializer = TelefoneResponseSerializer(
             telefones, many=True
-            )
+        )
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @extend_schema(
@@ -32,7 +31,7 @@ class TelefoneViewSet(viewsets.ViewSet):
         response_serializer = TelefoneResponseSerializer(telefone)
         return Response(
             response_serializer.data, status=status.HTTP_201_CREATED
-            )
+        )
 
     @extend_schema(
         summary="Recupera um telefone por ID",
@@ -53,7 +52,7 @@ class TelefoneViewSet(viewsets.ViewSet):
         serializer.is_valid(raise_exception=True)
         telefone = TelefoneService.atualizar_telefone(
             pk, serializer.validated_data
-            )
+        )
         response_serializer = TelefoneResponseSerializer(telefone)
         return Response(response_serializer.data, status=status.HTTP_200_OK)
 
@@ -67,7 +66,7 @@ class TelefoneViewSet(viewsets.ViewSet):
         serializer.is_valid(raise_exception=True)
         telefone = TelefoneService.atualizar_telefone(
             pk, serializer.validated_data
-            )
+        )
         response_serializer = TelefoneResponseSerializer(telefone)
         return Response(response_serializer.data, status=status.HTTP_200_OK)
 

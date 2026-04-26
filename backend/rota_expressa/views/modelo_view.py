@@ -1,6 +1,5 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
-from rest_framework import status
 from drf_spectacular.utils import extend_schema
 from rota_expressa.services.modelo_service import ModeloService
 from rota_expressa.serializers.modelo_serializer import (
@@ -20,7 +19,7 @@ class ModeloViewSet(viewsets.ViewSet):
         modelos = ModeloService.get_all_modelos()
         serializer = ModeloResponseSerializer(
             modelos, many=True
-            )
+        )
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @extend_schema(
@@ -35,7 +34,7 @@ class ModeloViewSet(viewsets.ViewSet):
         response_serializer = ModeloResponseSerializer(modelo)
         return Response(
             response_serializer.data, status=status.HTTP_201_CREATED
-            )
+        )
 
     @extend_schema(
         summary="Recupera um modelo por ID",
@@ -56,7 +55,7 @@ class ModeloViewSet(viewsets.ViewSet):
         serializer.is_valid(raise_exception=True)
         modelo = ModeloService.atualizar_modelo(
             pk, serializer.validated_data
-            )
+        )
         response_serializer = ModeloResponseSerializer(modelo)
         return Response(response_serializer.data, status=status.HTTP_200_OK)
 
@@ -70,7 +69,7 @@ class ModeloViewSet(viewsets.ViewSet):
         serializer.is_valid(raise_exception=True)
         modelo = ModeloService.atualizar_modelo(
             pk, serializer.validated_data
-            )
+        )
         response_serializer = ModeloResponseSerializer(modelo)
         return Response(response_serializer.data, status=status.HTTP_200_OK)
 

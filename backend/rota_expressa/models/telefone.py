@@ -8,14 +8,13 @@ class Telefone(models.Model):
         Usuario,
         on_delete=models.CASCADE,
         related_name='telefones'
-        )
+    )
 
     numero = models.CharField(
         max_length=11,
         unique=True,
         validators=[MinLengthValidator(11)]
-        )
+    )
 
     def __str__(self):
         return f"{self.numero} ({self.usuario.username})"
-

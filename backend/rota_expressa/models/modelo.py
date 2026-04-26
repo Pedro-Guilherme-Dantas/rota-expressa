@@ -8,7 +8,7 @@ class Modelo(models.Model):
         max_length=60,
         unique=True,
         validators=[MinLengthValidator(1)]
-        )
+    )
 
     ano = models.IntegerField()
     qtd_lugares = models.IntegerField(validators=[MinValueValidator(1)])
