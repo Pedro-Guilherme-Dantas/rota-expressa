@@ -1,7 +1,6 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema
-from rest_framework import status
 from rota_expressa.services.avalicacao_service import AvaliacaoService
 from rota_expressa.serializers.avaliacao_serializer import (
     AvaliacaoSerializer, AvaliacaoResponseSerializer
@@ -17,7 +16,7 @@ class AvaliacaoViewSet(viewsets.ViewSet):
         avaliacoes = AvaliacaoService.get_all_avaliacoes()
         serializer = AvaliacaoResponseSerializer(
             avaliacoes, many=True
-            )
+        )
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @extend_schema(
@@ -26,22 +25,21 @@ class AvaliacaoViewSet(viewsets.ViewSet):
         responses={201: AvaliacaoResponseSerializer}
     )
     def create(self, request):
-        # Passamos o context apenas por boa prática, mas o segredo está abaixo
-        serializer = AvaliacaoSerializer(data=request.data, context={'request': request})
+        serializer = AvaliacaoSerializer(
+            data=request.data, context={
+                'request': request}
+        )
         serializer.is_valid(raise_exception=True)
 
-        # Extraímos os dados validados (dicionário)
         dados_da_avaliacao = serializer.validated_data
-        
-        # Injetamos o usuário logado manualmente nos dados antes de mandar para o Service
+
         dados_da_avaliacao['usuario'] = request.user
 
-        # Chamamos o Service para criar
         avaliacao = AvaliacaoService.criar_avaliacao(dados_da_avaliacao)
 
         response_serializer = AvaliacaoResponseSerializer(avaliacao)
         return Response(
-            response_serializer.data, 
+            response_serializer.data,
             status=status.HTTP_201_CREATED
         )
 
@@ -64,7 +62,7 @@ class AvaliacaoViewSet(viewsets.ViewSet):
         serializer.is_valid(raise_exception=True)
         avaliacao = AvaliacaoService.atualizar_avaliacao(
             pk, serializer.validated_data
-            )
+        )
         response_serializer = AvaliacaoResponseSerializer(avaliacao)
         return Response(response_serializer.data, status=status.HTTP_200_OK)
 
@@ -78,7 +76,7 @@ class AvaliacaoViewSet(viewsets.ViewSet):
         serializer.is_valid(raise_exception=True)
         avaliacao = AvaliacaoService.atualizar_avaliacao(
             pk, serializer.validated_data
-            )
+        )
         response_serializer = AvaliacaoResponseSerializer(avaliacao)
         return Response(response_serializer.data, status=status.HTTP_200_OK)
 

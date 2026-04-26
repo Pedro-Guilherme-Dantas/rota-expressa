@@ -1,6 +1,5 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
-from rest_framework import status
 from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rota_expressa.services.usuario_service import UsuarioService
@@ -14,6 +13,7 @@ class UsuarioViewSet(viewsets.ViewSet):
         if self.action == 'create':
             return [AllowAny()]
         return [IsAuthenticated()]
+
     @extend_schema(
         summary="Lista os usuários",
         responses={200: UsuarioResponseSerializer(many=True)}
@@ -22,7 +22,7 @@ class UsuarioViewSet(viewsets.ViewSet):
         usuarios = UsuarioService.get_all_usuarios()
         serializer = UsuarioResponseSerializer(
             usuarios, many=True
-            )
+        )
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @extend_schema(
@@ -37,7 +37,7 @@ class UsuarioViewSet(viewsets.ViewSet):
         response_serializer = UsuarioResponseSerializer(usuario)
         return Response(
             response_serializer.data, status=status.HTTP_201_CREATED
-            )
+        )
 
     @extend_schema(
         summary="Recupera um usuário por ID",
@@ -55,12 +55,15 @@ class UsuarioViewSet(viewsets.ViewSet):
     )
     def update(self, request, pk=None):
         if str(request.user.id) != str(pk):
-            return Response({"detail": "Não autorizado"}, status=status.HTTP_403_FORBIDDEN)
+            return Response(
+                {"detail": "Não autorizado"},
+                status=status.HTTP_403_FORBIDDEN
+            )
         serializer = UsuarioSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         usuario = UsuarioService.atualizar_usuario(
             pk, serializer.validated_data
-            )
+        )
         response_serializer = UsuarioResponseSerializer(usuario)
         return Response(response_serializer.data, status=status.HTTP_200_OK)
 
@@ -71,12 +74,15 @@ class UsuarioViewSet(viewsets.ViewSet):
     )
     def partial_update(self, request, pk=None):
         if str(request.user.id) != str(pk):
-            return Response({"detail": "Não autorizado"}, status=status.HTTP_403_FORBIDDEN)
+            return Response(
+                {"detail": "Não autorizado"},
+                status=status.HTTP_403_FORBIDDEN
+            )
         serializer = UsuarioSerializer(data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         usuario = UsuarioService.atualizar_usuario(
             pk, serializer.validated_data
-            )
+        )
         response_serializer = UsuarioResponseSerializer(usuario)
         return Response(response_serializer.data, status=status.HTTP_200_OK)
 
@@ -86,7 +92,10 @@ class UsuarioViewSet(viewsets.ViewSet):
     )
     def destroy(self, request, pk=None):
         if str(request.user.id) != str(pk):
-            return Response({"detail": "Não autorizado"}, status=status.HTTP_403_FORBIDDEN)
+            return Response(
+                {"detail": "Não autorizado"},
+                status=status.HTTP_403_FORBIDDEN
+            )
         usuario = UsuarioService.get_usuario_by_id(pk)
         if not usuario:
             return Response(

@@ -1,6 +1,5 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
-from rest_framework import status
 from drf_spectacular.utils import extend_schema
 from rota_expressa.services.cidade_service import CidadeService
 from rota_expressa.serializers.cidade_serializer import (
@@ -20,7 +19,7 @@ class CidadeViewSet(viewsets.ViewSet):
         cidades = CidadeService.get_all_cidades()
         serializer = CidadeResponseSerializer(
             cidades, many=True
-            )
+        )
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @extend_schema(
@@ -35,7 +34,7 @@ class CidadeViewSet(viewsets.ViewSet):
         response_serializer = CidadeResponseSerializer(cidade)
         return Response(
             response_serializer.data, status=status.HTTP_201_CREATED
-            )
+        )
 
     @extend_schema(
         summary="Recupera uma cidade por ID",
@@ -56,7 +55,7 @@ class CidadeViewSet(viewsets.ViewSet):
         serializer.is_valid(raise_exception=True)
         cidade = CidadeService.atualizar_cidade(
             pk, serializer.validated_data
-            )
+        )
         response_serializer = CidadeResponseSerializer(cidade)
         return Response(response_serializer.data, status=status.HTTP_200_OK)
 
@@ -70,7 +69,7 @@ class CidadeViewSet(viewsets.ViewSet):
         serializer.is_valid(raise_exception=True)
         cidade = CidadeService.atualizar_cidade(
             pk, serializer.validated_data
-            )
+        )
         response_serializer = CidadeResponseSerializer(cidade)
         return Response(response_serializer.data, status=status.HTTP_200_OK)
 

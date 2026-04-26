@@ -31,6 +31,7 @@ ESTADOS = [
     ('TO', 'Tocantins'),
 ]
 
+
 class Cidade(models.Model):
     nome = models.CharField(max_length=100, validators=[MinLengthValidator(3)])
     estado = models.CharField(max_length=2, choices=ESTADOS)

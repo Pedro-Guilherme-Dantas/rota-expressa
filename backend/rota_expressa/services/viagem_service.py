@@ -18,15 +18,15 @@ class ViagemService:
         queryset = Viagem.objects.select_related('origem', 'destino', 'veiculo__modelo', 'motorista__usuario').all()
 
         if origem:
-            queryset = queryset.filter(origem_id=origem) 
-            
+            queryset = queryset.filter(origem_id=origem)
+
         if destino:
             queryset = queryset.filter(destino_id=destino)
-            
+
         if horario:
             # __gte = Maior ou igual (horários a partir do que o usuário digitou)
             queryset = queryset.filter(horario_partida__gte=horario)
-            
+
         if preco:
             # __lte = Menor ou igual (preços até o limite que o usuário digitou)
             queryset = queryset.filter(valor__lte=preco)
@@ -36,11 +36,11 @@ class ViagemService:
     @staticmethod
     def processar_cidades_ibge(dados_brutos: dict) -> dict:
         """
-        Intercepta os nomes das cidades vindos do front, verifica no banco 
+        Intercepta os nomes das cidades vindos do front, verifica no banco
         e devolve o dicionário com os IDs corretos para o Serializer validar.
         """
         dados = dados_brutos.copy()
-        
+
         origem_nome = dados.pop('origem_nome', None)
         origem_estado = dados.pop('origem_estado', None)
         destino_nome = dados.pop('destino_nome', None)
@@ -66,11 +66,11 @@ class ViagemService:
         """
         if not hasattr(usuario, 'perfil_motorista'):
             raise PermissionDenied("Apenas motoristas cadastrados podem criar viagens.")
-            
+
         veiculo = dados_validados.get('veiculo')
         if veiculo and veiculo.motorista != usuario.perfil_motorista:
             raise PermissionDenied("Você não pode criar uma viagem com o veículo de outro motorista.")
-        
+
         dados_validados['motorista'] = usuario.perfil_motorista
 
         return Viagem.objects.create(**dados_validados)

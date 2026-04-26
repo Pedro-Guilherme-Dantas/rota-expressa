@@ -29,8 +29,8 @@ class Veiculo(models.Model):
         unique=True,
         validators=[MinLengthValidator(
             7, message="A placa deve ter exatamente 7 caracteres."
-            )]
-        )
+        )]
+    )
 
     cor = models.CharField(max_length=30, choices=CORES)
     motorista = models.ForeignKey(Motorista, on_delete=models.CASCADE)

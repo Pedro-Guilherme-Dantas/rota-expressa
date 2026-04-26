@@ -1,10 +1,6 @@
-from urllib import request
-
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema
-from rota_expressa.models import Viagem
-from rest_framework import status
 from rota_expressa.services.viagem_service import ViagemService
 from rota_expressa.serializers.viagem_serializer import (
     ViagemSerializer, ViagemResponseSerializer
@@ -20,21 +16,18 @@ class ViagemViewSet(viewsets.ViewSet):
     )
     @method_decorator(cache_page(60 * 5))
     def list(self, request):
-        # 1. Captura os parâmetros da URL
         origem = request.query_params.get('origem')
         destino = request.query_params.get('destino')
         horario = request.query_params.get('horario_partida')
         preco = request.query_params.get('valor__lte')
 
-        # 2. Passa os parâmetros para o Service fazer o trabalho pesado
         viagens = ViagemService.get_viagens_filtradas(
-            origem=origem, 
-            destino=destino, 
-            horario=horario, 
+            origem=origem,
+            destino=destino,
+            horario=horario,
             preco=preco
         )
-        
-        # 3. Retorna os dados serializados
+
         serializer = ViagemResponseSerializer(viagens, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -44,18 +37,18 @@ class ViagemViewSet(viewsets.ViewSet):
         responses={201: ViagemResponseSerializer}
     )
     def create(self, request):
-        # 1. O Service transforma os dados do IBGE (nomes) em IDs do seu banco
         dados_preparados = ViagemService.processar_cidades_ibge(request.data)
 
-        # 2. A View faz a validação nativa do DRF com os dados já convertidos
         serializer = ViagemSerializer(data=dados_preparados)
         serializer.is_valid(raise_exception=True)
 
-        # 3. O Service executa a regra de negócio final (criar a viagem)
-        viagem = ViagemService.criar_viagem(serializer.validated_data, request.user)
-        
+        viagem = ViagemService.criar_viagem(
+            serializer.validated_data, request.user)
+
         response_serializer = ViagemResponseSerializer(viagem)
-        return Response(response_serializer.data, status=status.HTTP_201_CREATED)
+        return Response(response_serializer.data,
+                        status=status.HTTP_201_CREATED
+                        )
 
     @extend_schema(
         summary="Recupera uma viagem por ID",
@@ -76,7 +69,7 @@ class ViagemViewSet(viewsets.ViewSet):
         serializer.is_valid(raise_exception=True)
         viagem = ViagemService.atualizar_viagem(
             pk, serializer.validated_data
-            )
+        )
         response_serializer = ViagemResponseSerializer(viagem)
         return Response(response_serializer.data, status=status.HTTP_200_OK)
 
@@ -90,7 +83,7 @@ class ViagemViewSet(viewsets.ViewSet):
         serializer.is_valid(raise_exception=True)
         viagem = ViagemService.atualizar_viagem(
             pk, serializer.validated_data
-            )
+        )
         response_serializer = ViagemResponseSerializer(viagem)
         return Response(response_serializer.data, status=status.HTTP_200_OK)
 

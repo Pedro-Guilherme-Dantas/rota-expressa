@@ -8,13 +8,13 @@ class Avaliacao(models.Model):
         Motorista,
         on_delete=models.CASCADE,
         related_name='avaliacoes'
-        )
+    )
 
     usuario = models.ForeignKey(
         Usuario,
         on_delete=models.CASCADE,
         related_name='avaliacoes_feitas'
-        )
+    )
 
     NOTAS_CHOICES = [(i, str(i)) for i in range(1, 6)]
     nota = models.IntegerField(choices=NOTAS_CHOICES)
@@ -25,6 +25,6 @@ class Avaliacao(models.Model):
         msg = (
             f'Avaliação de {self.usuario.username} para '
             f'{self.motorista.usuario.first_name} - Nota: {self.nota}'
-                )
+        )
 
         return msg

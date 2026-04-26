@@ -3,10 +3,9 @@ from rest_framework import serializers
 
 
 class ViagemResponseSerializer(serializers.ModelSerializer):
-    origem = serializers.StringRelatedField() 
+    origem = serializers.StringRelatedField()
     destino = serializers.StringRelatedField()
-    
-    # Criamos os campos aninhados para enviar ao React
+
     veiculo_detalhes = serializers.SerializerMethodField()
     motorista_detalhes = serializers.SerializerMethodField()
 
