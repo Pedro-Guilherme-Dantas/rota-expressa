@@ -1,0 +1,10 @@
+#login-row {
+    background: #2A7B9B;
+    background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
+
+}
+
+#h2-login {
+    text-align: center;
+    margin-bottom: 20px;
+}
