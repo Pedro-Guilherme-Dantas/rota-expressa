@@ -20,14 +20,14 @@ class UsuarioService:
     @staticmethod
     def criar_usuario(dados_validados: dict) -> Usuario:
         is_motorista = dados_validados.pop('is_motorista', False)
-        
+
         if is_motorista:
             dados_validados['is_active'] = False
             usuario = Usuario.objects.create_user(**dados_validados)
             Motorista.objects.create(usuario=usuario)
         else:
             usuario = Usuario.objects.create_user(**dados_validados)
-            
+
         return usuario
 
     @staticmethod

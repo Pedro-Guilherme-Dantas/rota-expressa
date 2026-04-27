@@ -4,6 +4,7 @@ from rest_framework import serializers
 
 class UsuarioResponseSerializer(serializers.ModelSerializer):
     cidade_nome = serializers.ReadOnlyField(source='cidade.nome')
+
     class Meta:
         model = Usuario
         fields = [
