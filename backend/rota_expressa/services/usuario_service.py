@@ -1,6 +1,7 @@
 from django.db.models import QuerySet
 from rest_framework.exceptions import NotFound
 from rota_expressa.models import Usuario
+from rota_expressa.models.motorista import Motorista
 
 
 class UsuarioService:
@@ -18,7 +19,16 @@ class UsuarioService:
 
     @staticmethod
     def criar_usuario(dados_validados: dict) -> Usuario:
-        return Usuario.objects.create_user(**dados_validados)
+        is_motorista = dados_validados.pop('is_motorista', False)
+        
+        if is_motorista:
+            dados_validados['is_active'] = False
+            usuario = Usuario.objects.create_user(**dados_validados)
+            Motorista.objects.create(usuario=usuario)
+        else:
+            usuario = Usuario.objects.create_user(**dados_validados)
+            
+        return usuario
 
     @staticmethod
     def atualizar_usuario(usuario_id: int, dados_validados: dict) -> Usuario:
