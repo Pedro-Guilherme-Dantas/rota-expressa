@@ -1,6 +1,7 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rota_expressa.services.cidade_service import CidadeService
 from rota_expressa.serializers.cidade_serializer import (
     CidadeSerializer, CidadeResponseSerializer
@@ -10,6 +11,11 @@ from django.views.decorators.cache import cache_page
 
 
 class CidadeViewSet(viewsets.ViewSet):
+    def get_permissions(self):
+        if self.action == 'list':
+            return [AllowAny()]
+        return [IsAuthenticated()]
+
     @extend_schema(
         summary="Lista as cidades",
         responses={200: CidadeResponseSerializer(many=True)}
